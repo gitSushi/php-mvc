@@ -3,5 +3,5 @@
 interface RepositoryInterface
 {
     public function getAll();
-    public function getAllBy($array);
+    public function getAllBy($associativeArray);
 }

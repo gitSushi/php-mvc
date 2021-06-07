@@ -2,8 +2,8 @@
 
 interface CRUDInterface
 {
-    public function retrieve();
-    public function update();
-    public function delete();
-    public function create();
+    public function retrieve($id);
+    public function update($id);
+    public function delete($id);
+    public function create($associativeArray);
 }
