@@ -21,7 +21,7 @@ interface CRUDInterface
     public function delete($id);
 
     /**
-     * @param int $associativeArray : prend en argument un tableau associatif des propriétés
+     * @param array $associativeArray : prend en argument un tableau associatif des propriétés
      * @return object  retourne une entité
      */
     public function create($associativeArray);
