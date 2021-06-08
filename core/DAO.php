@@ -19,34 +19,4 @@ abstract class DAO implements RepositoryInterface, CRUDInterface
 
         $this->pdo = new \PDO($dsn, $config->username, $config->password, $options);
     }
-
-
-    public function retrieve($id)
-    {
-        return $this;
-    }
-
-    public function update($id)
-    {
-        return;
-    }
-
-    public function delete($id)
-    {
-        return;
-    }
-
-    public function create($associativeArray)
-    {
-        return $this;
-    }
-
-
-    public function getAll()
-    {
-    }
-
-    public function getAllBy($associativeArray)
-    {
-    }
 }
