@@ -10,6 +10,9 @@ abstract class DAO implements RepositoryInterface, CRUDInterface
     public function __construct()
     {
         $config = json_decode(file_get_contents("config/database.json"));
+        // default port
+        if ($config->port === "") $config->port = 3306;
+
         $dsn = "mysql:host=$config->host;dbname=$config->dbname;charset=utf8;port=$config->port";
         $options = [
             \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
