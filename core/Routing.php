@@ -27,12 +27,14 @@ class Routing
      * controlleur trouvé depuis le $this->config au niveau des valeurs
      *  exemple : "ViewController:getHome", -> controlleur:méthode
      */
+    private $controller;
 
     /**
      * array : $args
      * les arguments sont les variables de $_SERVER["REQUEST_URI"]
      * représenté dans le fichier routing.json par (:)
      */
+    private $args;
 
     /**
      * string : $method
@@ -41,13 +43,16 @@ class Routing
      * dans une des clé du tableau associatif de la propriété $this->config
      *  exemple : "GET": "DAOUser:retrieve",
      */
+    private $method;
 
 
     public function __construct()
     {
         $this->config = json_decode(file_get_contents("config/routing.json"), true);
-        // $this->uri = [];
-        // $this->route = [];
+        $this->uri = [];
+        $this->route = [];
+        $this->args = [];
+        $this->method = $_SERVER["REQUEST_METHOD"];
     }
 
     /**
@@ -68,19 +73,37 @@ class Routing
      */
     public function execute()
     {
-        // for ($i = 0; $i < count($this->config); $i++) {
-        //     if ($this->isEqual()) {
-        //         $this->compare();
-        //     }
-        // }
-
         $this->uri = explode("/", $_SERVER["REQUEST_URI"]);
+        // cleaning $this->uri of extra "" left from explode()
         array_shift($this->uri);
+        if ($this->uri[count($this->uri) - 1] === "" && count($this->uri) > 1) {
+            array_pop($this->uri);
+        }
 
-        $this->route = ["bob", "toto"];
+        foreach (array_keys($this->config) as $key) {
+            $this->route = [];
+            $this->route = explode("/", $key);
+            array_shift($this->route);
 
 
-        return $this->isEqual();
+            if ($this->isEqual()) {
+
+                if ($this->compare()) {
+                    // echo "<pre>";
+                    // var_dump($this->uri);
+                    // echo "</pre>";
+
+                    // echo "<pre>";
+                    // var_dump($this->route);
+                    // echo "</pre>";
+
+                    $this->controller = $this->getValue($this->config["/" . implode("/", $this->route)]);
+
+                    $this->invoke();
+                    break;
+                }
+            }
+        }
     }
 
 
@@ -106,31 +129,55 @@ class Routing
      *        avec la clé puis retourne si vrai
      *          exemple : "PUT": "DAOUser:update",
      *                     return DAOUser;
-     * @return 
+     * @param string|array $value
+     * @return string la chaine correspondant au contrôleur
      */
+    private function getValue($value)
+    {
+        if (gettype($value) === "array") {
+            return $value[$this->method];
+        }
+        return $value;
+    }
 
 
     /**
      * addArgument()
      * ajoute à $args les variables (:)
-     *  exemple : /api/users/52/messages/32
+     *  Exemple : /api/users/52/messages/32
      *           ajoute 52 à $args puis ajoutera 32 à son prochain appel
+     * @param int|string should be index of a table's row
      */
+    private function addArgument($index)
+    {
+        array_push($this->args, $index);
+    }
 
 
     /**
      * compare()
      * compare chaque élément des deux tableaux ($uri et $route)
-     * si les deux tableaux sont égaux, la route est trouvée
-     *  exemple : 
+     * si les deux tableaux sont égaux, la route est trouvée.
+     *  Exemple : 
      *   - $_SERVER["REQUEST_URI"] = "/api/users/52"
      *   - $_SERVER["REQUEST_METHOD"] = "POST"
      *  est égale à
      *   - "/api/users/(:)"
      *   - "POST": "DAOUser:create"
+     * @return bool
      */
     private function compare()
     {
+        for ($i = 0; $i < count($this->uri); $i++) {
+            if ($this->uri[$i] !== $this->route[$i]) {
+                if ($this->route[$i] === "(:)") {
+                    $this->addArgument($this->uri[$i]);
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 
@@ -143,4 +190,18 @@ class Routing
      *  $daoUser = new DAOUser();
      *  $daoUser->create($args);
      */
+    private function invoke()
+    {
+        $split = explode(":", $this->controller);
+
+        include_once('dao/ViewController.php');
+        include_once('dao/DAOUser.php');
+
+        $controllerClass = $split[0];
+        $controllerMethod = $split[1];
+
+        $controllerObject = new $controllerClass();
+        if (count($this->args) > 0) $controllerObject->$controllerMethod($this->args);
+        else $controllerObject->$controllerMethod();
+    }
 }

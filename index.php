@@ -13,4 +13,4 @@ spl_autoload_register(function ($class) {
 });
 
 $test = new Routing();
-var_dump($test->execute());
+$test->execute();
