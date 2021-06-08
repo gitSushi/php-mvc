@@ -12,6 +12,7 @@ class Routing
      * Découpage de $_SERVER["REQUEST_URI"] mis dans un tableau $uri
      * explode()
      */
+    private $uri;
 
     /**
      * array : $route
@@ -19,6 +20,7 @@ class Routing
      * et mis dans un tableau $route
      * explode()
      */
+    private $route;
 
     /**
      * string : $controller
@@ -44,6 +46,8 @@ class Routing
     public function __construct()
     {
         $this->config = json_decode(file_get_contents("config/routing.json"), true);
+        // $this->uri = [];
+        // $this->route = [];
     }
 
     /**
@@ -62,6 +66,22 @@ class Routing
      *      getValue() est appellé à la fin de la boucle intérieure
      * Enfin si une route a été trouvé, appel de invoke() ou 404
      */
+    public function execute()
+    {
+        // for ($i = 0; $i < count($this->config); $i++) {
+        //     if ($this->isEqual()) {
+        //         $this->compare();
+        //     }
+        // }
+
+        $this->uri = explode("/", $_SERVER["REQUEST_URI"]);
+        array_shift($this->uri);
+
+        $this->route = ["bob", "toto"];
+
+
+        return $this->isEqual();
+    }
 
 
     /**
@@ -70,6 +90,10 @@ class Routing
      *  exemple : count($uri) === count($route)
      * @return bool
      */
+    private function isEqual()
+    {
+        return count($this->uri) === count($this->route);
+    }
 
 
     /**
@@ -105,6 +129,9 @@ class Routing
      *   - "/api/users/(:)"
      *   - "POST": "DAOUser:create"
      */
+    private function compare()
+    {
+    }
 
 
     /**
