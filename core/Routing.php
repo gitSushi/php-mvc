@@ -49,7 +49,7 @@ class Routing
     public function __construct()
     {
         $this->config = json_decode(file_get_contents("config/routing.json"), true);
-        $this->uri = [];
+        $this->uri = explode("/", $_SERVER["REQUEST_URI"]);
         $this->route = [];
         $this->args = [];
         $this->method = $_SERVER["REQUEST_METHOD"];
@@ -73,35 +73,18 @@ class Routing
      */
     public function execute()
     {
-        $this->uri = explode("/", $_SERVER["REQUEST_URI"]);
         // cleaning $this->uri of extra "" left from explode()
-        array_shift($this->uri);
+        $this->sanitize($this->uri);
         if ($this->uri[count($this->uri) - 1] === "" && count($this->uri) > 1) {
             array_pop($this->uri);
         }
 
         foreach (array_keys($this->config) as $key) {
-            $this->route = [];
             $this->route = explode("/", $key);
-            array_shift($this->route);
-
+            $this->sanitize($this->route);
 
             if ($this->isEqual()) {
-
-                if ($this->compare()) {
-                    // echo "<pre>";
-                    // var_dump($this->uri);
-                    // echo "</pre>";
-
-                    // echo "<pre>";
-                    // var_dump($this->route);
-                    // echo "</pre>";
-
-                    $this->controller = $this->getValue($this->config["/" . implode("/", $this->route)]);
-
-                    $this->invoke();
-                    break;
-                }
+                $this->compare();
             }
         }
     }
@@ -147,10 +130,15 @@ class Routing
      *  Exemple : /api/users/52/messages/32
      *           ajoute 52 à $args puis ajoutera 32 à son prochain appel
      * @param int|string should be index of a table's row
+     * @return bool
      */
     private function addArgument($index)
     {
-        array_push($this->args, $index);
+        if ($this->route[$index] === "(:)") {
+            array_push($this->args, $this->uri[$index]);
+            return true;
+        }
+        return false;
     }
 
 
@@ -168,16 +156,14 @@ class Routing
      */
     private function compare()
     {
-        for ($i = 0; $i < count($this->uri); $i++) {
-            if ($this->uri[$i] !== $this->route[$i]) {
-                if ($this->route[$i] === "(:)") {
-                    $this->addArgument($this->uri[$i]);
-                } else {
-                    return false;
-                }
+        foreach (array_keys($this->uri) as $index) {
+            if ($this->uri[$index] !== $this->route[$index]) {
+                if (!$this->addArgument($index)) return false;
             }
         }
-        return true;
+
+        $this->controller = $this->getValue($this->config["/" . implode("/", $this->route)]);
+        $this->invoke();
     }
 
 
@@ -203,5 +189,14 @@ class Routing
         $controllerObject = new $controllerClass();
         if (count($this->args) > 0) $controllerObject->$controllerMethod($this->args);
         else $controllerObject->$controllerMethod();
+    }
+
+    /**
+     *  nettoie les listes $uri et $route en enlevant les éléments qui sont une chaine vide.
+     * @param array $array la liste à nettoyer
+     */
+    private function sanitize(&$array)
+    {
+        array_shift($array);
     }
 }
