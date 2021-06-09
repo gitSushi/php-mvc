@@ -51,7 +51,6 @@ class Routing
         $this->config = json_decode(file_get_contents("config/routing.json"), true);
         $this->uri = explode("/", $_SERVER["REQUEST_URI"]);
         $this->route = [];
-        $this->args = [];
         $this->method = $_SERVER["REQUEST_METHOD"];
     }
 
@@ -79,7 +78,18 @@ class Routing
             array_pop($this->uri);
         }
 
+
         foreach (array_keys($this->config) as $key) {
+            /**
+             * Reinitialise args pour les cas de path à variable(s)
+             *  Exemple :
+             *      - route -> /boo/loo/(:)/dao/(:) puis /boo/loo/(:)/tao/(:)
+             *      - uri -> /boo/loo/45/tao/78
+             *  Sans la réinitialisation la longueur de $args serait 3
+             *  alors qu'il n'y a que 2 variables qui nous intéresse.
+             */
+            $this->args = [];
+
             $this->route = explode("/", $key);
             $this->sanitize($this->route);
 

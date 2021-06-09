@@ -13,5 +13,7 @@ class DAOUser
     public function retrieve($args)
     {
         echo "Is " . $args[0] . " your age ?";
+        echo "<br/>";
+        echo "length of args is: " . count($args);
     }
 }

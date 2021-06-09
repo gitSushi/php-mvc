@@ -10,5 +10,11 @@
     "PUT": "DAOUser:update",
     "DELETE": "DAOUser:delete",
     "POST": "DAOUser:create"
+  },
+  "/boo/loo/(:)/dao/(:)": {
+    "GET": "DAOUser:getAll"
+  },
+  "/boo/loo/(:)/tao/(:)": {
+    "GET": "DAOUser:retrieve"
   }
 }
