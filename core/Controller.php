@@ -21,8 +21,12 @@ abstract class Controller
      * @param string $pathToView
      * @param array $data
      */
-    protected function render(string $pathToView, array $data)
+    protected function render(string $pathToView, array $datas)
     {
+        foreach ($datas as $key => $value) {
+            $$key = $value;
+        }
+        include('./views/' . $pathToView . '.php');
     }
 
     /**
