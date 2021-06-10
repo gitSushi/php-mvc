@@ -1,10 +1,14 @@
 <?php
 
-class DAOUser extends DAO
+class DAOProjects extends DAO
 {
     public function getAll()
     {
-        echo "All the people";
+        return $this->pdo->query(
+            "SELECT project_id, project_name, description, logo, start_date, end_date
+            FROM PROJECT"
+        )
+            ->fetchAll(PDO::FETCH_ASSOC);;
     }
 
     public function getAllBy($associativeArray)
@@ -16,10 +20,6 @@ class DAOUser extends DAO
      */
     public function retrieve($args)
     {
-        var_dump($args);
-        echo "Is " . $args[0] . " your age ?";
-        echo "<br/>";
-        echo "length of args is: " . count($args);
     }
 
     public function create($associativeArray)

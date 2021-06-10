@@ -10,5 +10,6 @@
     "PUT": "DAOUser:update",
     "DELETE": "DAOUser:delete",
     "POST": "DAOUser:create"
-  }
+  },
+  "/projekts-list": "ProjektListController:getAll"
 }

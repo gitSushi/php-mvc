@@ -1,8 +1,8 @@
 {
   "driver": "",
-  "host": "",
-  "port": "",
-  "dbname": "",
-  "username": "",
-  "password": ""
+  "host": "172.17.0.1",
+  "port": "3434",
+  "dbname": "bwb_pil",
+  "username": "root",
+  "password": "root"
 }
