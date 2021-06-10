@@ -50,7 +50,7 @@ class Routing
     {
         $this->config = json_decode(file_get_contents("config/routing.json"), true);
         $this->uri = explode("/", $_SERVER["REQUEST_URI"]);
-        $this->route = [];
+        $this->route = array();
         $this->method = $_SERVER["REQUEST_METHOD"];
     }
 
@@ -88,7 +88,7 @@ class Routing
              *  Sans la réinitialisation la longueur de $args serait 3
              *  alors qu'il n'y a que 2 variables qui nous intéresse.
              */
-            $this->args = [];
+            $this->args = array();
 
             $this->route = explode("/", $key);
             $this->sanitize($this->route);
@@ -190,15 +190,15 @@ class Routing
     {
         $split = explode(":", $this->controller);
 
-        include_once('dao/ViewController.php');
-        include_once('dao/DAOUser.php');
-
         $controllerClass = $split[0];
         $controllerMethod = $split[1];
 
-        $controllerObject = new $controllerClass();
-        if (count($this->args) > 0) $controllerObject->$controllerMethod($this->args);
-        else $controllerObject->$controllerMethod();
+        // $controllerObject = new $controllerClass();
+        // if (count($this->args) > 0) $controllerObject->$controllerMethod($this->args);
+        // else $controllerObject->$controllerMethod();
+
+        // Does the same thing as above
+        call_user_func_array(array(new $controllerClass, $controllerMethod), array($this->args));
     }
 
     /**

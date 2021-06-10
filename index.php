@@ -11,6 +11,3 @@ spl_autoload_register(function ($class) {
         include './dao/' . $class . '.php';
     endif;
 });
-
-$test = new Routing();
-$test->execute();
