@@ -7,14 +7,14 @@ Dans le cadre d'un TD sur la POO (Programmation Orientée Objet) pendant ma form
 ### Routing
 
 Dans le fichier config/routing.json, rentrez vos `"route": "controleur:méthode"` paires.
-- soit la route pointant directement au controleur:méthode
+- soit la route pointant directement vers le controleur:méthode
     :warning: N'OUBLIEZ PAS LES DEUX-POINTS ENTRE LE CONTROLEUR ET LA METHODE :warning:
     ```json
     {
         "/": "ViewController:getHome"
     }
     ```
-- soit un objet avec des paires `"Verbe_HTTP": "controleur:méthode"`
+- soit la route pointant vers un objet avec des paires `"Verbe_HTTP": "controleur:méthode"`
     ```json
     {
         "/api/users": {
@@ -26,6 +26,7 @@ Dans le fichier config/routing.json, rentrez vos `"route": "controleur:méthode"
 - soit une route avec des variables représenté ici par `(:)` :warning: SI VOUS VOULEZ CHANGER LE SYMBOLE IL VOUS FAUDRA LE CHANGER EGALEMENT DANS LE FICHIER core/Routing.php :warning:
     ```json
     {
+        "/les_cartes/(:)": "ViewController:getCartes",
         "/api/users/(:)": {
             "GET": "DAOUser:retrieve",
             "PUT": "DAOUser:update"
@@ -49,13 +50,14 @@ $this->render("index", ["users" => (new DAOUser())->getAll()]);
 
 Vos classes dao dans le dossier /dao doivent `extends DAO`.
 De plus il faut donner un corps à toutes les fonctions provenant des interfaces RepositoryInterface et CRUDInterface. A savoir :
-    - `public function getAll();`
-    - `public function getAllBy($associativeArray);`
-
-    - `public function create($associativeArray);`
-    - `public function retrieve($id);`
-    - `public function update($id);`
-    - `public function delete($id);`
+```php
+public function getAll() {}
+public function getAllBy($associativeArray) {}
+public function create($associativeArray) {}
+public function retrieve($id) {}
+public function update($id) {}
+public function delete($id) {}
+```
 
 Vous pourrez y ajouter vos query SQL et alimenter vos modèles. Vous avez bien évidemment accès à votre pdo si vous avez correctement rempli votre fichier database.json.
 ```php
@@ -93,5 +95,3 @@ Dans un fichier PHP que vous avez nommé dans le contrôleur, vous pouvez y mett
 ```output
 Hello World !
 ```
-
-Useless test : /play trololo
