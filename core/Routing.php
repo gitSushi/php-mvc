@@ -50,6 +50,11 @@ class Routing
     {
         $this->config = json_decode(file_get_contents("config/routing.json"), true);
         $this->uri = explode("/", $_SERVER["REQUEST_URI"]);
+        $lastEl = count($this->uri) - 1;
+        $lastSplit = explode("?", $this->uri[$lastEl]);
+        if (count($lastSplit) > 1) {
+            $this->uri[$lastEl] = explode("?", $this->uri[$lastEl])[0] . "?";
+        }
         $this->route = array();
         $this->method = $_SERVER["REQUEST_METHOD"];
     }
