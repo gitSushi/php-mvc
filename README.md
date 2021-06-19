@@ -87,7 +87,7 @@ Vous avez bien évidemment accès à votre pdo si vous avez correctement rempli 
 ### models
 
 Vos classes d'objets représentant votre base de données à placer dans le dossier /models.
-Des accesseurs/moduleurs devront être mis en place pour une utilisation standardisée.
+Des accesseurs (getter), mutateurs (setter) devront être mis en place pour une utilisation standardisée.
 
 Exemple :
 ```php
