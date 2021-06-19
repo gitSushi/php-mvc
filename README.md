@@ -59,7 +59,7 @@ public function update($id) {}
 public function delete($id) {}
 ```
 
-Vous pourrez y ajouter vos query SQL et alimenter vos modèles. Vous avez bien évidemment accès à votre pdo si vous avez correctement rempli votre fichier database.json.
+Vous pourrez y ajouter vos query SQL,
 ```php
 public function getAll()
 {
@@ -70,6 +70,43 @@ public function getAll()
         ->fetchAll(PDO::FETCH_ASSOC);
 }
 
+```
+
+alimenter vos modèles (nous verrons les modèles dans la section suivante).
+```php
+public function getAll()
+{
+    // ...
+        ->fetchAll(PDO::FETCH_CLASS, "Project");
+}
+
+```
+
+Vous avez bien évidemment accès à votre pdo si vous avez correctement rempli votre fichier database.json.
+
+### models
+
+Vos classes d'objets représentant votre base de données à placer dans le dossier /models.
+Des accesseurs/moduleurs devront être mis en place pour une utilisation standardisée.
+
+Exemple :
+```php
+class Project {
+    private $project_id;
+    private $project_name;
+
+    public function getId(){
+        return $this->project_id;
+    }
+
+    public function getprojectName(){
+        return $this->project_name;
+    }
+
+    public function setprojectName($projectName){
+        return $this->project_name = $projectName;
+    }
+}
 ```
 
 ### Le fichier database.json
